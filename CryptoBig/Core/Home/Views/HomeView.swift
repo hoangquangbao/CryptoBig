@@ -42,6 +42,9 @@ extension HomeView {
             CircleButtonView(iconName: isShowPortfolio ? "plus" : "info")
             // Doesn't apply animation for this Button when isShowPortfolio value changed
                 .animation(.none, value: isShowPortfolio)
+                .background(
+                    CircleButtonAnimationView(isAnimation: $isShowPortfolio)
+                )
             
             Spacer()
             
