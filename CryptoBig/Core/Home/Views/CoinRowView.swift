@@ -9,7 +9,8 @@ import SwiftUI
 
 struct CoinRowView: View {
     
-    var coin: CoinModel
+    let coin: CoinModel
+    let isShowHoldingColume: Bool
     
     var body: some View {
         
@@ -29,6 +30,16 @@ struct CoinRowView: View {
             
             Spacer()
             
+            if isShowHoldingColume {
+                VStack(alignment: .trailing) {
+                    Text(coin.currentHoldingValue.asCurrencyWith6Decimals())
+                        .bold()
+                        .foregroundColor(Color.theme.accent)
+                    
+                    Text(coin.currentHolding?.asNumberString() ?? "0")
+                }
+            }
+            
             VStack(alignment: .trailing) {
 //                Text("\(coin.currentPrice)")
                 Text(coin.currentPrice.asCurrencyWith6Decimals())
@@ -43,12 +54,14 @@ struct CoinRowView: View {
                         Color.theme.redColor
                     )
             }
+            .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
         }
+        .font(.subheadline)
     }
 }
 
 struct CoinRowView_Previews: PreviewProvider {
     static var previews: some View {
-        CoinRowView(coin: dev.coin)
+        CoinRowView(coin: dev.coin, isShowHoldingColume: true)
     }
 }
