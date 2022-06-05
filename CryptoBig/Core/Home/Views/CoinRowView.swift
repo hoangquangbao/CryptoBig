@@ -32,7 +32,7 @@ struct CoinRowView: View {
             
             if isShowHoldingColume {
                 VStack(alignment: .trailing) {
-                    Text(coin.currentHoldingValue.asCurrencyWith6Decimals())
+                    Text(coin.currentHoldingValue.asCurrencyWith2Decimals())
                         .bold()
                         .foregroundColor(Color.theme.accent)
                     
@@ -42,7 +42,7 @@ struct CoinRowView: View {
             
             VStack(alignment: .trailing) {
 //                Text("\(coin.currentPrice)")
-                Text(coin.currentPrice.asCurrencyWith6Decimals())
+                Text(coin.currentPrice.asCurrencyWith2Decimals())
                     .bold()
                     .foregroundColor(Color.theme.accent)
                 
