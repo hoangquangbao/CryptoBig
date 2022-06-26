@@ -21,6 +21,7 @@ struct HomeView: View {
             // Content layer
             VStack {
                 homeHeader
+                columnTitle
                 
                 if !isShowPortfolio {
                     allCoinList
@@ -104,5 +105,20 @@ extension HomeView {
             }
         }
         .listStyle(PlainListStyle())
+    }
+    
+    private var columnTitle: some View {
+        HStack {
+            Text("Coin")
+            Spacer()
+            if isShowPortfolio {
+                Text("Holding")
+            }
+            Text("Price")
+                .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
+        }
+        .font(.caption)
+        .foregroundColor(Color.theme.secondaryTextColor)
+        .padding(.horizontal)
     }
 }
