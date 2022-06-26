@@ -33,7 +33,7 @@ struct CoinRowView_Previews: PreviewProvider {
             CoinRowView(coin: dev.coin, isShowHoldingColume: true)
                 .previewLayout(.sizeThatFits)
             
-            CoinRowView(coin: dev.coin, isShowHoldingColume: true)
+            CoinRowView(coin: dev.coin, isShowHoldingColume: false)
                 .previewLayout(.sizeThatFits)
                 .preferredColorScheme(.dark)
         }
