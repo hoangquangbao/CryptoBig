@@ -76,9 +76,6 @@ class CoinDataService {
     
     @Published var allCoins: [CoinModel] = []
     
-    //1. Nếu triển khai tập cancel như này thì sẽ rất khó khi ta muốn hủy một đối tượng cụ thể nào đó
-//    var cancellables = Set<AnyCancellable>()
-    //2. nên ta chuyển sang cách này
     var coinSubscription: AnyCancellable?
     
     init() {
@@ -92,14 +89,10 @@ class CoinDataService {
         else { return }
         
         coinSubscription = NetworkingManager.download(url: url)
-        //Step5: we decoded it into coin models
             .decode(type: [CoinModel].self, decoder: JSONDecoder())
-        //Step6: we handle the complition
             .sink(receiveCompletion: NetworkingManager.handleCompletion, receiveValue: { [weak self] returnedCoins in
-                    self?.allCoins = returnedCoins
-                    //3. Nếu ta ko có lệnh hủy ở đây thì cx ko vấn đề j bởi nó ko chiếm quá nhiều bộ nhớ
-                    //nhưng ta cx nên cancel nó đi bởi nó thật sự ko lm thêm bất cứ cái gì sau khi nó trả về data
-                    self?.coinSubscription?.cancel()
+                self?.allCoins = returnedCoins
+                self?.coinSubscription?.cancel()
             })
     }
 }

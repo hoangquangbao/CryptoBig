@@ -13,25 +13,33 @@ import SwiftUI
 
 class NetworkingManager {
     
-//    static func download(url: URL) -> Publishers.ReceiveOn<Publishers.TryMap<Publishers.SubscribeOn<URLSession.DataTaskPublisher, DispatchQueue>, Data>, DispatchQueue> {
+    enum NetworkingError: LocalizedError {
+        case badURLResponse(url: URL)
+        case unknown
+        
+        var errorDescription: String? {
+            switch self {
+            case .badURLResponse(url: let url):
+                return "[🔥] Bad response from URL: \(url)"
+            case .unknown:
+                return "[⚠️] Unknown error occured"
+            }
+        }
+    }
+    
     static func download(url: URL) -> AnyPublisher<Data, Error> {
         return URLSession.shared.dataTaskPublisher(for: url)
-        //Step2: Using subscribe of combine to get data
             .subscribe(on: DispatchQueue.global(qos: .default))
-        //Step3: Use map the url response
-            .tryMap({ try handleURLResponse(output: $0)})
-        //Step4: we received on the main thread
+            .tryMap({ try handleURLResponse(output: $0, url: url)})
             .receive(on: DispatchQueue.main)
-        
         //MARK: As you can see return type above so crazy. Combine have a func convert return publisher type to return AnyPublisher type by use code line below
             .eraseToAnyPublisher()
     }
     
-    static func handleURLResponse(output: URLSession.DataTaskPublisher.Output) throws -> Data {
-        //Strp3-1: Check it valid or not
+    static func handleURLResponse(output: URLSession.DataTaskPublisher.Output, url: URL) throws -> Data {
         guard let response = output.response as? HTTPURLResponse,
               response.statusCode >= 200 && response.statusCode < 300 else {
-            throw URLError(.badServerResponse)
+            throw NetworkingError.badURLResponse(url: url)
         }
         return output.data
     }
