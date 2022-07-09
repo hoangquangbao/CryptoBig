@@ -9,6 +9,7 @@
  */
 import Foundation
 import Combine
+import SwiftUI
 
 class NetworkingManager {
     
@@ -18,19 +19,21 @@ class NetworkingManager {
         //Step2: Using subscribe of combine to get data
             .subscribe(on: DispatchQueue.global(qos: .default))
         //Step3: Use map the url response
-            .tryMap { output -> Data in
-                //Strp3-1: Check it valid or not
-                guard let response = output.response as? HTTPURLResponse,
-                      response.statusCode >= 200 && response.statusCode < 300 else {
-                    throw URLError(.badServerResponse)
-                }
-                return output.data
-            }
+            .tryMap({ try handleURLResponse(output: $0)})
         //Step4: we received on the main thread
             .receive(on: DispatchQueue.main)
         
         //MARK: As you can see return type above so crazy. Combine have a func convert return publisher type to return AnyPublisher type by use code line below
             .eraseToAnyPublisher()
+    }
+    
+    static func handleURLResponse(output: URLSession.DataTaskPublisher.Output) throws -> Data {
+        //Strp3-1: Check it valid or not
+        guard let response = output.response as? HTTPURLResponse,
+              response.statusCode >= 200 && response.statusCode < 300 else {
+            throw URLError(.badServerResponse)
+        }
+        return output.data
     }
     
     static func handleCompletion(completion: Subscribers.Completion<Error>) {
